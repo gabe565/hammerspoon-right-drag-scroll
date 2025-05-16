@@ -85,10 +85,10 @@ end
 --- Starts event traps
 ---
 --- Parameters:
----   * None
+---  * None
 ---
 --- Returns:
----   * The RightDragScroll object
+---  * The RightDragScroll object
 function obj:start()
   self.rightMouseDownTap:start()
   self.rightMouseUpTap:start()
@@ -101,10 +101,10 @@ end
 --- Stops event traps
 ---
 --- Parameters:
----   * None
+---  * None
 ---
 --- Returns:
----   * The RightDragScroll object
+---  * The RightDragScroll object
 function obj:stop()
   self.rightMouseDownTap:stop()
   self.rightMouseUpTap:stop()
