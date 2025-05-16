@@ -14,14 +14,14 @@ obj.author = "gabe565"
 obj.homepage = "https://github.com/gabe565/hammerspoon-right-drag-scroll"
 obj.license = 'MIT - https://opensource.org/licenses/MIT'
 
--- RightDragScroll.scrollCountTolerance
+-- RightDragScroll.scrollDistTolerance
 -- Variable
--- Number of scroll calls that will trigger a right click
-obj.scrollCountTolerance = 10
+-- Maximum scroll distance that will trigger a right click
+obj.scrollDistTolerance = 20
 
 --- RightDragScroll.scrollDurationTolerance
 --- Variable
---- Time in fractional seconds where a scroll will trigger a right click
+--- Maximum fractional seconds where a scroll will trigger a right click
 obj.scrollDurationTolerance = 0.2
 
 --- RightDragScroll.scrollMultiplierX
@@ -39,17 +39,17 @@ obj.scrollMultiplierY = 6
 --- Adjust this value (0 to 1) to control the smoothing effect
 obj.smoothFactor = 0.5
 
-obj.scrollEventCount = 0
+obj.scrollDist = {x = 0, y = 0}
 obj.pressedAt = 0
 
 function obj.rightMouseDownCb(e)
-  obj.scrollEventCount = 0
+  obj.scrollDist = {x = 0, y = 0}
   obj.pressedAt = hs.timer.secondsSinceEpoch()
   return true
 end
 
 function obj.rightMouseUpCb(e)
-  if obj.scrollEventCount < obj.scrollCountTolerance and hs.timer.secondsSinceEpoch() - obj.pressedAt < obj.scrollDurationTolerance then
+  if hs.math.abs(obj.scrollDist.x) < obj.scrollDistTolerance and hs.math.abs(obj.scrollDist.y) < obj.scrollDistTolerance and hs.timer.secondsSinceEpoch() - obj.pressedAt < obj.scrollDurationTolerance then
     obj.rightMouseDownTap:stop()
     obj.rightMouseUpTap:stop()
     hs.eventtap.rightClick(e:location())
@@ -72,7 +72,8 @@ function obj.rightMouseDraggedCb(e)
   local scroll = hs.eventtap.event.newScrollEvent({dx, dy}, {}, "pixel")
   scroll:setFlags(e:getFlags())
 
-  obj.scrollEventCount = obj.scrollEventCount + 1
+  obj.scrollDist.x = obj.scrollDist.x + dx
+  obj.scrollDist.y = obj.scrollDist.y + dy
 
   return true, {scroll}
 end
@@ -85,6 +86,7 @@ function obj:init()
   -- Eager-load the modules
   hs.mouse.absolutePosition()
   hs.timer.secondsSinceEpoch()
+  hs.math.abs(0)
 end
 
 --- RightDragScroll:start()
