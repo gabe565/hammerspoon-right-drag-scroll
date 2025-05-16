@@ -1,6 +1,6 @@
 --- === RightDragScroll ===
 ---
---- Scrolls when right mouse button is dragged.
+--- Scroll when right mouse button is dragged. Useful with trackball mice, but works with anything.
 ---
 --- https://github.com/gabe565/hammerspoon-right-drag-scroll
 
