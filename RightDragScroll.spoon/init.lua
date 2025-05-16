@@ -60,8 +60,6 @@ function obj.rightMouseDraggedCb(e)
 
   local dx = e:getProperty(hs.eventtap.event.properties["mouseEventDeltaX"]) * obj.smoothFactor
   local dy = e:getProperty(hs.eventtap.event.properties["mouseEventDeltaY"]) * obj.smoothFactor
-  obj.scrollEventCount = obj.scrollEventCount + 1
-
   if dx == 0 and dy == 0 then
     return true
   end
@@ -72,6 +70,8 @@ function obj.rightMouseDraggedCb(e)
     "pixel"
   )
   scroll:setFlags(e:getFlags())
+
+  obj.scrollEventCount = obj.scrollEventCount + 1
 
   return true, {scroll}
 end
