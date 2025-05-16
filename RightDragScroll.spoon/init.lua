@@ -24,10 +24,15 @@ obj.scrollCountTolerance = 5
 --- Time in fractional seconds where a scroll will trigger a right click
 obj.scrollDurationTolerance = 0.15
 
---- RightDragScroll.scrollMultiplier
+--- RightDragScroll.scrollMultiplierX
 --- Variable
---- Natural scroll multiplier
-obj.scrollMultiplier = 6
+--- Horizontal natural scroll multiplier
+obj.scrollMultiplierX = 3
+
+--- RightDragScroll.scrollMultiplierY
+--- Variable
+--- Vertical natural scroll multiplier
+obj.scrollMultiplierY = 6
 
 --- RightDragScroll.smoothFactor
 --- Variable
@@ -58,17 +63,13 @@ end
 function obj.rightMouseDraggedCb(e)
   hs.mouse.absolutePosition(hs.mouse.absolutePosition())
 
-  local dx = e:getProperty(hs.eventtap.event.properties["mouseEventDeltaX"]) * obj.smoothFactor
-  local dy = e:getProperty(hs.eventtap.event.properties["mouseEventDeltaY"]) * obj.smoothFactor
+  local dx = e:getProperty(hs.eventtap.event.properties["mouseEventDeltaX"]) * obj.scrollMultiplierX * obj.smoothFactor
+  local dy = e:getProperty(hs.eventtap.event.properties["mouseEventDeltaY"]) * obj.scrollMultiplierY * obj.smoothFactor
   if dx == 0 and dy == 0 then
     return true
   end
 
-  local scroll = hs.eventtap.event.newScrollEvent(
-    {dx * obj.scrollMultiplier, dy * obj.scrollMultiplier},
-    {},
-    "pixel"
-  )
+  local scroll = hs.eventtap.event.newScrollEvent({dx, dy}, {}, "pixel")
   scroll:setFlags(e:getFlags())
 
   obj.scrollEventCount = obj.scrollEventCount + 1
