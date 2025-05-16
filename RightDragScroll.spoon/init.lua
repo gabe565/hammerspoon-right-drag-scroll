@@ -17,12 +17,12 @@ obj.license = 'MIT - https://opensource.org/licenses/MIT'
 -- RightDragScroll.scrollCountTolerance
 -- Variable
 -- Number of scroll calls that will trigger a right click
-obj.scrollCountTolerance = 5
+obj.scrollCountTolerance = 10
 
 --- RightDragScroll.scrollDurationTolerance
 --- Variable
 --- Time in fractional seconds where a scroll will trigger a right click
-obj.scrollDurationTolerance = 0.15
+obj.scrollDurationTolerance = 0.2
 
 --- RightDragScroll.scrollMultiplierX
 --- Variable
@@ -49,7 +49,7 @@ function obj.rightMouseDownCb(e)
 end
 
 function obj.rightMouseUpCb(e)
-  if obj.scrollEventCount < obj.scrollCountTolerance or hs.timer.secondsSinceEpoch() - obj.pressedAt < obj.scrollDurationTolerance then
+  if obj.scrollEventCount < obj.scrollCountTolerance and hs.timer.secondsSinceEpoch() - obj.pressedAt < obj.scrollDurationTolerance then
     obj.rightMouseDownTap:stop()
     obj.rightMouseUpTap:stop()
     hs.eventtap.rightClick(e:location())
