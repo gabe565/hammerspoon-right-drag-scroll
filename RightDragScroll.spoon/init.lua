@@ -81,6 +81,10 @@ function obj:init()
   self.rightMouseDownTap = hs.eventtap.new({hs.eventtap.event.types.rightMouseDown}, self.rightMouseDownCb)
   self.rightMouseUpTap = hs.eventtap.new({hs.eventtap.event.types.rightMouseUp}, self.rightMouseUpCb)
   self.rightMouseDragged = hs.eventtap.new({hs.eventtap.event.types.rightMouseDragged}, self.rightMouseDraggedCb)
+
+  -- Eager-load the modules
+  hs.mouse.absolutePosition()
+  hs.timer.secondsSinceEpoch()
 end
 
 --- RightDragScroll:start()
