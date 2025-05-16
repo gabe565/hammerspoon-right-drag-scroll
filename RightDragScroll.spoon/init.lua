@@ -56,20 +56,22 @@ function obj.rightMouseUpCb(e)
 end
 
 function obj.rightMouseDraggedCb(e)
-  obj.scrollEventCount = obj.scrollEventCount + 1
+  hs.mouse.absolutePosition(hs.mouse.absolutePosition())
 
-  local savedMousePos = hs.mouse.absolutePosition()
   local dx = e:getProperty(hs.eventtap.event.properties["mouseEventDeltaX"]) * obj.smoothFactor
   local dy = e:getProperty(hs.eventtap.event.properties["mouseEventDeltaY"]) * obj.smoothFactor
-  local flags = e:getFlags()
+  obj.scrollEventCount = obj.scrollEventCount + 1
+
+  if dx == 0 and dy == 0 then
+    return true
+  end
 
   local scroll = hs.eventtap.event.newScrollEvent(
     {dx * obj.scrollMultiplier, dy * obj.scrollMultiplier},
     {},
     "pixel"
   )
-  scroll:setFlags(flags)
-  hs.mouse.absolutePosition(savedMousePos)
+  scroll:setFlags(e:getFlags())
 
   return true, {scroll}
 end
