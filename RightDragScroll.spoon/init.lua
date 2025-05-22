@@ -27,7 +27,7 @@ obj.scrollDurationTolerance = 0.2
 --- RightDragScroll.scrollMultiplierX
 --- Variable
 --- Horizontal natural scroll multiplier
-obj.scrollMultiplierX = 3
+obj.scrollMultiplierX = 6
 
 --- RightDragScroll.scrollMultiplierY
 --- Variable
