@@ -44,6 +44,11 @@ obj.smoothFactor = 0.5
 --- List of application bundle IDs or names that should disable the spoon when focused
 obj.disabledApps = {}
 
+--- RightDragScroll.disabledWindowTitlePatterns
+--- Variable
+--- List of Lua patterns; if the focused window title matches any pattern, the spoon is disabled
+obj.disabledWindowTitlePatterns = {}
+
 obj.scrollDist = {x = 0, y = 0}
 obj.pressedAt = 0
 obj.paused = false
@@ -93,7 +98,22 @@ function obj:isDisabledApp(app)
     local bundleId = (app:bundleID() or ''):lower()
     local appName = (app:name() or ''):lower()
 
-    return self.disabledAppsSet[bundleId] or self.disabledAppsSet[appName]
+    if self.disabledAppsSet[bundleId] or self.disabledAppsSet[appName] then
+      return true
+    end
+  end
+
+  if self.disabledWindowTitlePatterns then
+    local win = app:focusedWindow()
+    local title = win and win:title()
+
+    if title then
+      for _, pattern in ipairs(self.disabledWindowTitlePatterns) do
+        if type(pattern) == "string" and title:match(pattern) then
+          return true
+        end
+      end
+    end
   end
 
   return false

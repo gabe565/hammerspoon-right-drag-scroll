@@ -18,18 +18,23 @@ Scroll when right mouse button is dragged. Useful with trackball mice, but works
 
 ## Disable for specific apps
 
-If there are applications where you prefer the default right click behavior (for example, games like Minecraft), set `disabledApps` before starting the spoon:
+If there are applications where you prefer the default right click behavior, set `disabledApps` before starting the spoon:
 
 ```lua
 hs.loadSpoon("RightDragScroll")
+-- Disable using bundle ID or app name
 spoon.RightDragScroll.disabledApps = {
   "com.spotify.client", -- bundle ID
   "Spotify"             -- or app name
 }
+-- Or disable by window title (Lua pattern/regex)
+spoon.RightDragScroll.disabledWindowTitlePatterns = {
+  "^Minecraft %d"
+}
 spoon.RightDragScroll:start()
 ```
 
-When any of the listed apps are focused, RightDragScroll's functionality is temporarily disabled so right click works normally.
+When any of the listed apps (or windows whose titles match one of the patterns) are focused, RightDragScroll's functionality is temporarily disabled so right click works normally.
 
 > [!TIP]
 > To find an app's bundle ID, run one of the following commands:
