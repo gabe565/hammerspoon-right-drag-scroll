@@ -49,18 +49,20 @@ obj.disabledApps = {}
 --- List of Lua patterns; if the focused window title matches any pattern, the spoon is disabled
 obj.disabledWindowTitlePatterns = {}
 
-obj.scrollDist = {x = 0, y = 0}
+obj.scrollDistX = 0
+obj.scrollDistY = 0
 obj.pressedAt = 0
 obj.paused = false
 
 function obj.rightMouseDownCb(e)
-  obj.scrollDist = {x = 0, y = 0}
+  obj.scrollDistX = 0
+  obj.scrollDistY = 0
   obj.pressedAt = hs.timer.secondsSinceEpoch()
   return true
 end
 
 function obj.rightMouseUpCb(e)
-  if hs.math.abs(obj.scrollDist.x) < obj.scrollDistTolerance and hs.math.abs(obj.scrollDist.y) < obj.scrollDistTolerance and hs.timer.secondsSinceEpoch() - obj.pressedAt < obj.scrollDurationTolerance then
+  if hs.math.abs(obj.scrollDistX) < obj.scrollDistTolerance and hs.math.abs(obj.scrollDistY) < obj.scrollDistTolerance and hs.timer.secondsSinceEpoch() - obj.pressedAt < obj.scrollDurationTolerance then
     obj.rightMouseDownTap:stop()
     obj.rightMouseUpTap:stop()
     hs.eventtap.rightClick(e:location())
@@ -83,8 +85,8 @@ function obj.rightMouseDraggedCb(e)
   local scroll = hs.eventtap.event.newScrollEvent({dx, dy}, {}, "pixel")
   scroll:setFlags(e:getFlags())
 
-  obj.scrollDist.x = obj.scrollDist.x + dx
-  obj.scrollDist.y = obj.scrollDist.y + dy
+  obj.scrollDistX = obj.scrollDistX + dx
+  obj.scrollDistY = obj.scrollDistY + dy
 
   return true, {scroll}
 end
