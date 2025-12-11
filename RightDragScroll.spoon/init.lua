@@ -39,8 +39,14 @@ obj.scrollMultiplierY = 6
 --- Adjust this value (0 to 1) to control the smoothing effect
 obj.smoothFactor = 0.5
 
+--- RightDragScroll.disabledApps
+--- Variable
+--- List of application bundle IDs or names that should disable the spoon when focused
+obj.disabledApps = {}
+
 obj.scrollDist = {x = 0, y = 0}
 obj.pressedAt = 0
+obj.paused = false
 
 function obj.rightMouseDownCb(e)
   obj.scrollDist = {x = 0, y = 0}
@@ -78,10 +84,38 @@ function obj.rightMouseDraggedCb(e)
   return true, {scroll}
 end
 
+function obj:isDisabledApp(app)
+  if not app then
+    return false
+  end
+
+  if self.disabledAppsSet then
+    local bundleId = (app:bundleID() or ''):lower()
+    local appName = (app:name() or ''):lower()
+
+    return self.disabledAppsSet[bundleId] or self.disabledAppsSet[appName]
+  end
+
+  return false
+end
+
+function obj:updateDisabledApp(app)
+  if self:isDisabledApp(app) then
+    self:pause()
+  else
+    self:resume()
+  end
+end
+
 function obj:init()
   self.rightMouseDownTap = hs.eventtap.new({hs.eventtap.event.types.rightMouseDown}, self.rightMouseDownCb)
   self.rightMouseUpTap = hs.eventtap.new({hs.eventtap.event.types.rightMouseUp}, self.rightMouseUpCb)
   self.rightMouseDragged = hs.eventtap.new({hs.eventtap.event.types.rightMouseDragged}, self.rightMouseDraggedCb)
+  self.appWatcher = hs.application.watcher.new(function(_, event, app)
+    if event == hs.application.watcher.activated then
+      self:updateDisabledApp(app)
+    end
+  end)
 
   -- Eager-load the modules
   hs.mouse.absolutePosition()
@@ -99,9 +133,19 @@ end
 --- Returns:
 ---  * The RightDragScroll object
 function obj:start()
+  self.disabledAppsSet = {}
+  for _, app in ipairs(self.disabledApps) do
+    if type(app) == "string" then
+      self.disabledAppsSet[app:lower()] = true
+    end
+  end
+
+  self.paused = false
   self.rightMouseDownTap:start()
   self.rightMouseUpTap:start()
   self.rightMouseDragged:start()
+  self:updateDisabledApp(hs.application.frontmostApplication())
+  self.appWatcher:start()
   return self
 end
 
@@ -115,9 +159,49 @@ end
 --- Returns:
 ---  * The RightDragScroll object
 function obj:stop()
+  self.paused = false
   self.rightMouseDownTap:stop()
   self.rightMouseUpTap:stop()
   self.rightMouseDragged:stop()
+  self.appWatcher:stop()
+  return self
+end
+
+--- RightDragScroll:resume()
+--- Method
+--- Resumes mouse event traps
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * The RightDragScroll object
+function obj:resume()
+  if self.paused then
+    self.paused = false
+    self.rightMouseDownTap:start()
+    self.rightMouseUpTap:start()
+    self.rightMouseDragged:start()
+  end
+  return self
+end
+
+--- RightDragScroll:pause()
+--- Method
+--- Pauses mouse event traps
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * The RightDragScroll object
+function obj:pause()
+  if not self.paused then
+    self.paused = true
+    self.rightMouseDownTap:stop()
+    self.rightMouseUpTap:stop()
+    self.rightMouseDragged:stop()
+  end
   return self
 end
 
