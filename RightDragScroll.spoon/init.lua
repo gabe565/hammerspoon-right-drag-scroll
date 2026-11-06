@@ -62,7 +62,7 @@ function obj.rightMouseDownCb(e)
 end
 
 function obj.rightMouseUpCb(e)
-  if hs.math.abs(obj.scrollDistX) < obj.scrollDistTolerance and hs.math.abs(obj.scrollDistY) < obj.scrollDistTolerance and hs.timer.secondsSinceEpoch() - obj.pressedAt < obj.scrollDurationTolerance then
+  if obj.scrollDistX < obj.scrollDistTolerance and obj.scrollDistY < obj.scrollDistTolerance and hs.timer.secondsSinceEpoch() - obj.pressedAt < obj.scrollDurationTolerance then
     obj.rightMouseDownTap:stop()
     obj.rightMouseUpTap:stop()
     hs.eventtap.rightClick(e:location())
@@ -85,8 +85,8 @@ function obj.rightMouseDraggedCb(e)
   local scroll = hs.eventtap.event.newScrollEvent({dx, dy}, {}, "pixel")
   scroll:setFlags(e:getFlags())
 
-  obj.scrollDistX = obj.scrollDistX + dx
-  obj.scrollDistY = obj.scrollDistY + dy
+  obj.scrollDistX = obj.scrollDistX + hs.math.abs(dx)
+  obj.scrollDistY = obj.scrollDistY + hs.math.abs(dy)
 
   return true, {scroll}
 end
