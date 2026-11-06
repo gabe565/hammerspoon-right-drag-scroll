@@ -57,12 +57,12 @@ obj.paused = false
 function obj.rightMouseDownCb(e)
   obj.scrollDistX = 0
   obj.scrollDistY = 0
-  obj.pressedAt = hs.timer.secondsSinceEpoch()
+  obj.pressedAt = e:timestamp()
   return true
 end
 
 function obj.rightMouseUpCb(e)
-  if obj.scrollDistX < obj.scrollDistTolerance and obj.scrollDistY < obj.scrollDistTolerance and hs.timer.secondsSinceEpoch() - obj.pressedAt < obj.scrollDurationTolerance then
+  if obj.scrollDistX < obj.scrollDistTolerance and obj.scrollDistY < obj.scrollDistTolerance and (e:timestamp() - obj.pressedAt) / 1e9 < obj.scrollDurationTolerance then
     obj.rightMouseDownTap:stop()
     obj.rightMouseUpTap:stop()
     hs.eventtap.rightClick(e:location())
@@ -141,7 +141,6 @@ function obj:init()
 
   -- Eager-load the modules
   hs.mouse.absolutePosition()
-  hs.timer.secondsSinceEpoch()
   hs.math.abs(0)
 end
 
